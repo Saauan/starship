@@ -19,7 +19,7 @@ export default class Mobile{
     }
 
     /**
-     * 
+     * draws the Mobile on the context
      * @param {*} context - the context on which to draw the mobile
      */
     draw(context){
