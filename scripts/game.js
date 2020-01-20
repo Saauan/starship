@@ -1,5 +1,6 @@
 import Starship from "./starship.js";
 import Saucer from "./saucer.js";
+import MoveState from "./movestate.js";
 
 
 /**
@@ -17,17 +18,16 @@ class Game{
      *      - a score
      */
     constructor(){
-        this.canvas = undefined;
-        this.starship = undefined;
+        this._canvas = undefined;
         this.saucers = [];
-        this.score = 0;
+        this._score = 0;
     }
 
     /**
      * Sets the canvas of this game
      */
     set canvas(canvas){
-        this.canvas = canvas;
+        this._canvas = canvas;
         this.createStarship();
     }
 
@@ -35,14 +35,7 @@ class Game{
      * Creates and initialize the starship attribute.
      */
     createStarship(){
-        this.starship = new Starship(40, this.canvas.height / 2);
-    }
-
-    /**
-     * Returns the starship of this game
-     */
-    get starship(){
-        return this.starship;
+        this.starship = new Starship(40, this._canvas.height / 2);
     }
 
 
@@ -51,10 +44,11 @@ class Game{
      * at a random height.
      */
     addSaucer(){
-        y = getRandomInt(this.canvas.height); // random height
-        x = this.canvas.width; // far right
-        saucer = new Saucer(x, y);
+        const y = getRandomInt(this._canvas.height); // random height
+        const x = this._canvas.width; // far right
+        let saucer = new Saucer(x, y);
         this.saucers.push(saucer); // Add at the end of the list
+        console.log(this.saucers);
     }
 
     /**
@@ -82,23 +76,50 @@ class Game{
      * Adds `x` to the score
      */
     addScore(x){
-        this.score += x;
+        this._score += x;
     }
 
     /**
      * Returns the current score
      */
     get score(){
-        return this.score;
+        return this._score;
     }
 
     /**
      * Sets the score, throws exception
      */
-    set score(){
-        throw "Cannot set score !";
+    set score(score){
+        console.log("cannot set score !");
     }
 
+
+    
+    isSaucerInBound(saucer){
+        if(saucer.x <= 0){
+            return false;
+        }
+        return true;
+    }
+
+    correctStarshipCoordinates(starship){
+        if(starship.y < 0){
+            starship.y = 0;
+        }
+        if(starship.y > this._canvas.height - starship.image.height){
+            starship.y = this._canvas.height - starship.image.height;
+        }
+    }
+
+    // initialize the timer variables and start the animation
+    startAnimating(fps){
+        this.fpsInterval = 1000 / fps;
+        this.then = Date.now();
+        this.animate();
+    }
+
+    // the animation loop calculates time elapsed since the last loop
+    // and only draws if your specified fps interval is achieved
     /**
      * Animate the game :
      * 
@@ -107,13 +128,36 @@ class Game{
      *      - Requests the next animation frame
      */
     animate(){
-        this.saucers.forEach(saucer => saucer.move());
-        // this.saucers.forEach(saucer => saucer.move());
-        this.spaceship.draw();
+        // request another frame
+        window.requestAnimationFrame(this.animate.bind(this));
 
-        // Encapsulate within `animateOneFrame`
+        // calc elapsed time since last loop
+        this.now = Date.now();
+        this.elapsed = this.now - this.then;
+        // if enough time has elapsed, draw the next frame
+        if (this.elapsed > this.fpsInterval){
+            // Get ready for next frame by setting then=now, but also adjust for your
+            // specified fpsInterval not being a multiple of RAF's interval (16.7ms)
+            this.then = this.now - (this.elapsed % this.fpsInterval)
 
-        window.requestAnimationFrame();
+            // animation code
+            let context = this._canvas.getContext("2d");
+
+            // Move the saucers
+            this.saucers.forEach(saucer => {saucer.clear(context); saucer.move();});
+            // Remove out of bound saucers
+            this.saucers = this.saucers.filter(this.isSaucerInBound);
+            // Redraw the saucers
+            this.saucers.forEach(saucer => {saucer.draw(context)});
+
+            // Move the starship
+            this.starship.clear(context);
+            this.starship.move();
+            // Correct its coordinates so it stays in the canvas
+            this.correctStarshipCoordinates(this.starship);
+            // Redraw the starship
+            this.starship.draw(context);
+        }
     }
 
     /**
@@ -124,17 +168,35 @@ class Game{
      * 
      * @param {*} event the event triggered by pressing a key
      */
-    keyActionHandler(event){
+    keyDownActionHandler(event){
         switch(event.key){
             case "ArrowUp":
             case "Up":
-                // this.starship.moveUp()
+                this.starship.moving = MoveState.UP;
 
             break;
             case "ArrowDown":
             case "Down":
-                // this.starship.moveDown()
+                this.starship.moving = MoveState.DOWN;
 
+            break;
+            default: return;
+        }
+        event.preventDefault();
+    }
+
+    /**
+     * Handles key releases.
+     * 
+     * @param {*} event the event triggered by pressing a key
+     */
+    keyUpActionHandler(event){
+        switch(event.key){
+            case "ArrowUp":
+            case "Up":
+            case "ArrowDown":
+            case "Down":
+                this.starship.moving = MoveState.IMMOBILE;
             break;
             default: return;
         }

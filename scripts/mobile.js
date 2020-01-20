@@ -33,5 +33,16 @@ export default class Mobile{
     move(){
         this.x += this.speed_x;
         this.y += this.speed_y;
+        console.log("" + this.x + " " + this.y);
+    }
+
+    clear(context){
+        context.clearRect(this.x, this.y, this.image.width, this.image.height);
+    }
+
+    moveAndDraw(context){
+        this.clear(context);
+        this.move();
+        this.draw(context);
     }
 }
