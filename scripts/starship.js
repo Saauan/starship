@@ -25,7 +25,6 @@ export default class Starship extends Mobile{
      * Moving doesn't make the starship get out of the canvas
      */
     move(){
-        console.log(this.moving);
         if(this.moving != MoveState.IMMOBILE){
             if(this.up){
                 this.speed_y = -this.speed_y;

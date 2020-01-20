@@ -51,32 +51,33 @@ class Game{
         console.log(this.saucers);
     }
 
-    /**
-     * Removes the selected saucer from the game
-     * 
-     * @param {*} saucer the saucer to remove
-     */
-    removeSaucer(saucer){
-        i = 0
-        el = undefined
-        // Search for the saucer
-        while(i < this.saucers.length && this.saucers[i] != saucer){
-            i++;
-        }
-        if(i >= this.saucers.length){
-            throw "removeSaucer : saucer was not found"
-        }
-        removedSaucer = this.saucers.splice(i, 1);
-        if(saucer != removedSaucer){
-            throw "Wrong saucer removed.";
-        }
-    }
+    // /**
+    //  * Removes the selected saucer from the game
+    //  * 
+    //  * @param {*} saucer the saucer to remove
+    //  */
+    // removeSaucer(saucer){
+    //     i = 0
+    //     el = undefined
+    //     // Search for the saucer
+    //     while(i < this.saucers.length && this.saucers[i] != saucer){
+    //         i++;
+    //     }
+    //     if(i >= this.saucers.length){
+    //         throw "removeSaucer : saucer was not found"
+    //     }
+    //     removedSaucer = this.saucers.splice(i, 1);
+    //     if(saucer != removedSaucer){
+    //         throw "Wrong saucer removed.";
+    //     }
+    // }
 
     /**
      * Adds `x` to the score
      */
     addScore(x){
         this._score += x;
+        this.scoreBox.textContent = this.score;
     }
 
     /**
@@ -91,6 +92,14 @@ class Game{
      */
     set score(score){
         console.log("cannot set score !");
+    }
+
+    set scoreBox(scoreBox){
+        this._scoreBox = scoreBox;
+    }
+
+    get scoreBox(){
+        return this._scoreBox;
     }
 
 
@@ -141,23 +150,39 @@ class Game{
             this.then = this.now - (this.elapsed % this.fpsInterval)
 
             // animation code
-            let context = this._canvas.getContext("2d");
-
-            // Move the saucers
-            this.saucers.forEach(saucer => {saucer.clear(context); saucer.move();});
-            // Remove out of bound saucers
-            this.saucers = this.saucers.filter(this.isSaucerInBound);
-            // Redraw the saucers
-            this.saucers.forEach(saucer => {saucer.draw(context)});
-
-            // Move the starship
-            this.starship.clear(context);
-            this.starship.move();
-            // Correct its coordinates so it stays in the canvas
-            this.correctStarshipCoordinates(this.starship);
-            // Redraw the starship
-            this.starship.draw(context);
+            this.animateOneFrame();
         }
+    }
+
+    animateOneFrame(){
+        let context = this._canvas.getContext("2d");
+
+        // Move the saucers
+        this.saucers.forEach(saucer => {saucer.clear(context); saucer.move();});
+        // Remove out of bound saucers
+        const oldLength = this.saucers.length;
+        this.saucers = this.saucers.filter(this.isSaucerInBound);
+        const newLength = this.saucers.length;
+        const difference = oldLength - newLength;
+        if(difference < 0){
+            throw "A ship was added, but was not supposed to be";
+        }
+        if(difference > 0){
+            this.addScore(-1000*difference);
+        }
+        
+        // Redraw the saucers
+        this.saucers.forEach(saucer => {saucer.draw(context)});
+
+
+
+        // Move the starship
+        this.starship.clear(context);
+        this.starship.move();
+        // Correct its coordinates so it stays in the canvas
+        this.correctStarshipCoordinates(this.starship);
+        // Redraw the starship
+        this.starship.draw(context);
     }
 
     /**

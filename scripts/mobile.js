@@ -33,7 +33,6 @@ export default class Mobile{
     move(){
         this.x += this.speed_x;
         this.y += this.speed_y;
-        console.log("" + this.x + " " + this.y);
     }
 
     clear(context){
