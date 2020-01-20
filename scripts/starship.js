@@ -11,12 +11,12 @@ export default class Starship extends Mobile{
         this.moving = MoveState.IMMOBILE();
     }
 
-    /* Is the starship moving up */
+    /* Returns whether the starship moving up or not*/
     get up(){
         return this.moving === MoveState.UP();
     }
     
-    /* Is the starship moving down */
+    /* Returns whether the starship moving down or not*/
     get down(){
         return this.moving === MoveState.DOWN();
     }
