@@ -1,3 +1,4 @@
+import saucerImage from "../images/flyingSaucer-petit.png";
 
 /**
  * The Mobile class defines an object represented by an image and that can move
@@ -9,7 +10,7 @@
  * speed_x and speed_y - the horizontal and vertical speed of the Mobile
  */
 export default class Mobile{
-    constructor(x, y, image_src= "images/flyingSaucer-petit.png", speed_x = 0, speed_y = 0){
+    constructor(x, y, image_src= saucerImage, speed_x = 0, speed_y = 0){
         this.image = new Image();
         this.image.src = image_src;
         this.x = x;

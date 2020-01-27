@@ -1,4 +1,5 @@
 import theGame from "./game.js";
+import '../style/style.css';
 
 
 const setup = function() {

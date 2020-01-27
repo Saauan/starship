@@ -1,11 +1,12 @@
 import Mobile from './mobile.js';
+import shootImage from "../images/tir.png"
 
 /**
  * An instance of shoot is a laser which can hit mobiles.
  */
 export default class Shoot extends Mobile{
 	constructor(x, y){       
-        super(x, y, "images/tir.png", 8, 0);
+        super(x, y, shootImage, 8, 0);
 	}
 	
 	isColliding(mobile){

@@ -1,10 +1,11 @@
 import Mobile from './mobile.js';
+import saucerImage from "../images/flyingSaucer-petit.png";
 /**
  * A Saucer is an ennemy Mobile which usually moves to the right
  */
 export default class Saucer extends Mobile{
     constructor(x, y){       
-        super(x, y, "images/flyingSaucer-petit.png", -3, 0);
+        super(x, y, saucerImage, -3, 0);
         this.falling = false;
     }
 

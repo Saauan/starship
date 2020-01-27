@@ -41,7 +41,7 @@ class Game{
     }
 
     addShoot(){
-        this.shoots.push(new Shoot(this.starship.x + this.starship.image.width, this.starship.y));
+        this.shoots.push(new Shoot(this.starship.x + this.starship.image.width, this.starship.y + this.starship.image.height - 8));
     }
 
 

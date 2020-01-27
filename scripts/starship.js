@@ -1,5 +1,6 @@
 import Mobile from "./mobile.js";
 import MoveState from "./movestate.js";
+import starshipImage from "../images/vaisseau-ballon-petit.png";
 
 /**
  * The starship represents the player's vessel, it inherits from Mobile
@@ -7,7 +8,7 @@ import MoveState from "./movestate.js";
  */
 export default class Starship extends Mobile{
     constructor(x, y){       
-        super(x, y, "images/vaisseau-ballon-petit.png", 0, 8);
+        super(x, y, starshipImage, 0, 8);
         this.moving = MoveState.IMMOBILE;
     }
 
