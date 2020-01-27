@@ -1,6 +1,7 @@
 import Starship from "./starship.js";
 import Saucer from "./saucer.js";
 import MoveState from "./movestate.js";
+import Shoot from "./shoot.js";
 
 
 /**
@@ -21,6 +22,7 @@ class Game{
         this._canvas = undefined;
         this.saucers = [];
         this._score = 0;
+        this.shoots = [];
     }
 
     /**
@@ -36,6 +38,10 @@ class Game{
      */
     createStarship(){
         this.starship = new Starship(40, this._canvas.height / 2);
+    }
+
+    addShoot(){
+        this.shoots.push(new Shoot(this.starship.x + this.starship.image.width, this.starship.y));
     }
 
 
@@ -104,8 +110,22 @@ class Game{
 
 
     
-    isSaucerInBound(saucer){
+    isSaucerInBoundLeft(saucer){
         if(saucer.x <= 0){
+            return false;
+        }
+        return true;
+    }
+
+    isSaucerInBoundDown(saucer){
+        if(saucer.y >= this._canvas.height){
+            return false;
+        }
+        return true;
+    }
+
+    isShotInBound(shot){
+        if(shot.x >= this._canvas.width){
             return false;
         }
         return true;
@@ -161,7 +181,7 @@ class Game{
         this.saucers.forEach(saucer => {saucer.clear(context); saucer.move();});
         // Remove out of bound saucers
         const oldLength = this.saucers.length;
-        this.saucers = this.saucers.filter(this.isSaucerInBound);
+        this.saucers = this.saucers.filter(this.isSaucerInBoundLeft);
         const newLength = this.saucers.length;
         const difference = oldLength - newLength;
         if(difference < 0){
@@ -170,11 +190,27 @@ class Game{
         if(difference > 0){
             this.addScore(-1000*difference);
         }
+        this.saucers = this.saucers.filter(this.isSaucerInBoundDown.bind(this));
         
         // Redraw the saucers
         this.saucers.forEach(saucer => {saucer.draw(context)});
 
+        // Move the shoots
+        this.shoots.forEach(shoot => {shoot.clear(context); shoot.move();});
+        // Check for colisions
+        this.shoots.forEach(shoot => {
+            const eventuallyASaucer = shoot.checkForCollisions(this.saucers);
+            console.log(eventuallyASaucer);
+            if(eventuallyASaucer){
+                eventuallyASaucer.shot();
+                this.addScore(200);
+                this.shoots.splice(this.shoots.indexOf(shoot), 1);
+            }
+        });
+        this.shoots.forEach(shoot => shoot.draw(context));
 
+        // Remove out of bound shots
+        this.shoots = this.shoots.filter(this.isShotInBound.bind(this));
 
         // Move the starship
         this.starship.clear(context);
@@ -204,6 +240,9 @@ class Game{
             case "Down":
                 this.starship.moving = MoveState.DOWN;
 
+            break;
+            case " ":
+                this.addShoot();
             break;
             default: return;
         }
