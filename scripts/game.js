@@ -23,6 +23,7 @@ class Game{
         this.saucers = [];
         this._score = 0;
         this.shoots = [];
+        this.flotteSoucoupe = false;
     }
 
     /**
@@ -55,6 +56,24 @@ class Game{
         let saucer = new Saucer(x, y);
         this.saucers.push(saucer); // Add at the end of the list
         console.log(this.saucers);
+    }
+
+    addSaucerRandomly(){
+        const myRandInt = getRandomInt(1);
+        if(myRandInt == 0){
+            this.addSaucer();
+        }
+    }
+
+    infSoucoupe(){
+        if (this.flotteSoucoupe == false){
+            this.flotteSoucoupe = true;
+            this.flotteInterval = window.setInterval(this.addSaucerRandomly.bind(this), 750);
+        }
+        else{
+            this.flotteSoucoupe = false;
+            clearInterval(this.flotteInterval);
+        }
     }
 
     // /**

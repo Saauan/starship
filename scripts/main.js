@@ -7,6 +7,9 @@ const setup = function() {
 	const boutonSoucoupe = document.getElementById("nouvelleSoucoupe");
 	boutonSoucoupe.addEventListener("click", theGame.addSaucer.bind(theGame));
 
+	const boutonFlotteSoucoupe = document.getElementById("flotteSoucoupes");
+	boutonFlotteSoucoupe.addEventListener("click", theGame.infSoucoupe.bind(theGame));
+
 	const scoreBox = document.getElementById("score");
 	theGame.scoreBox = scoreBox;
 
