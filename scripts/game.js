@@ -76,27 +76,6 @@ class Game{
         }
     }
 
-    // /**
-    //  * Removes the selected saucer from the game
-    //  * 
-    //  * @param {*} saucer the saucer to remove
-    //  */
-    // removeSaucer(saucer){
-    //     i = 0
-    //     el = undefined
-    //     // Search for the saucer
-    //     while(i < this.saucers.length && this.saucers[i] != saucer){
-    //         i++;
-    //     }
-    //     if(i >= this.saucers.length){
-    //         throw "removeSaucer : saucer was not found"
-    //     }
-    //     removedSaucer = this.saucers.splice(i, 1);
-    //     if(saucer != removedSaucer){
-    //         throw "Wrong saucer removed.";
-    //     }
-    // }
-
     /**
      * Adds `x` to the score
      */
